@@ -1,0 +1,440 @@
+app:
+  description: ''
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  mode: workflow
+  name: 小红书文案洗稿
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.5@fd6efd37c2a931911de8ab9ca3ba2da303bef146d45ee87ad896b04b36d09403
+kind: app
+version: 0.3.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: http-request
+      id: 1747456065946-source-1747456153612-target
+      source: '1747456065946'
+      sourceHandle: source
+      target: '1747456153612'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: http-request
+        targetType: code
+      id: 1747456153612-source-1747456195415-target
+      source: '1747456153612'
+      sourceHandle: source
+      target: '1747456195415'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1747456195415-source-1747456262329-target
+      source: '1747456195415'
+      sourceHandle: source
+      target: '1747456262329'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: llm
+      id: 1747456195415-source-1747456310230-target
+      source: '1747456195415'
+      sourceHandle: source
+      target: '1747456310230'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1747456262329-source-1747456395930-target
+      source: '1747456262329'
+      sourceHandle: source
+      target: '1747456395930'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: 1747456310230-source-1747456395930-target
+      source: '1747456310230'
+      sourceHandle: source
+      target: '1747456395930'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables:
+        - label: 小红书图文链接,示例https://www.xiaohongshu.com/explore/68206de7000000002001cb87?source=webshare&xhsshare=pc_web&xsec_token=ABmfpWH4HNliJAKlz-0of4_37w7rLht1YN0CpuED4E2Xg=&xsec_source=pc_share
+          max_length: 500
+          options: []
+          required: true
+          type: paragraph
+          variable: url
+      height: 89
+      id: '1747456065946'
+      position:
+        x: 30
+        y: 262.5
+      positionAbsolute:
+        x: 30
+        y: 262.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        authorization:
+          config: null
+          type: no-auth
+        body:
+          data: []
+          type: none
+        desc: ''
+        headers: ''
+        method: get
+        params: ''
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 100
+        selected: false
+        ssl_verify: true
+        timeout:
+          max_connect_timeout: 0
+          max_read_timeout: 0
+          max_write_timeout: 0
+        title: HTTP 请求
+        type: http-request
+        url: '{{#1747456065946.url#}}'
+        variables: []
+      height: 96
+      id: '1747456153612'
+      position:
+        x: 333
+        y: 262.5
+      positionAbsolute:
+        x: 333
+        y: 262.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        code: "import re\n\n\ndef extract_title(webpage_content):\n    \"\"\"\n  \
+          \  从小红书网页内容中提取标题\n    \n    Args:\n        webpage_content (str): 整个网页的HTML内容\n\
+          \    \n    Returns:\n        str: 提取的标题\n    \"\"\"\n    # 尝试从JSON数据中提取标题\n\
+          \    try:\n        initial_state_match = re.search(r'window\\.__INITIAL_STATE__=(.*?);</script>',\
+          \ webpage_content)\n        if initial_state_match:\n            title_match\
+          \ = re.search(r'\"title\":\"([^\"]+)\"', initial_state_match.group(1))\n\
+          \            if title_match:\n                return title_match.group(1)\n\
+          \    except:\n        pass\n    \n    # 备用方法：从HTML中提取标题\n    title_match\
+          \ = re.search(r'<div id=\"detail-title\" class=\"title\" [^>]*>(.*?)</div>',\
+          \ webpage_content)\n    if title_match:\n        return title_match.group(1)\n\
+          \    \n    return \"\"\n\ndef extract_description(webpage_content):\n  \
+          \  \"\"\"\n    从小红书网页内容中提取描述文本（包括标签）\n    \n    Args:\n        webpage_content\
+          \ (str): 整个网页的HTML内容\n    \n    Returns:\n        str: 提取的描述文本\n    \"\"\
+          \"\n    # 尝试从JSON数据中提取描述\n    try:\n        initial_state_match = re.search(r'window\\\
+          .__INITIAL_STATE__=(.*?);</script>', webpage_content)\n        if initial_state_match:\n\
+          \            desc_match = re.search(r'\"desc\":\"([^\"]*)\"', initial_state_match.group(1))\n\
+          \            if desc_match:\n                desc = desc_match.group(1)\n\
+          \                # 处理描述中的特殊标记\n                desc = re.sub(r'\\[话题\\]',\
+          \ '', desc)\n                desc = re.sub(r'\uFEFF', '', desc)\n      \
+          \          return desc.strip()\n    except:\n        pass\n    \n    # 备用方法：定位包含描述的div元素\n\
+          \    desc_div_match = re.search(r'<div id=\"detail-desc\" class=\"desc\"\
+          [^>]*>(.*?)</div>', webpage_content, re.DOTALL)\n    if desc_div_match:\n\
+          \        desc_content = desc_div_match.group(1)\n        \n        # 提取所有标签文本\n\
+          \        tags = re.findall(r'<a id=\"hash-tag\"[^>]*>(#[^<]+)</a>', desc_content)\n\
+          \        \n        # 提取普通文本，忽略HTML标签和注释\n        # 先移除所有HTML注释\n       \
+          \ clean_content = re.sub(r'<!--.*?-->', '', desc_content, flags=re.DOTALL)\n\
+          \        # 提取所有非HTML标签内的文本\n        text_parts = []\n        current_pos\
+          \ = 0\n        \n        # 遍历所有标签\n        for tag in tags:\n          \
+          \  # 寻找这个标签在原文中的位置\n            tag_pos = clean_content.find(tag, current_pos)\n\
+          \            if tag_pos > current_pos:\n                # 提取标签前的文本\n   \
+          \             text_before = clean_content[current_pos:tag_pos]\n       \
+          \         # 移除HTML标签，只保留文本\n                text_before = re.sub(r'<[^>]*>',\
+          \ '', text_before)\n                if text_before.strip():\n          \
+          \          text_parts.append(text_before.strip())\n            \n      \
+          \      # 添加标签\n            text_parts.append(tag)\n            current_pos\
+          \ = tag_pos + len(tag)\n        \n        # 提取最后一个标签后的文本\n        if current_pos\
+          \ < len(clean_content):\n            text_after = clean_content[current_pos:]\n\
+          \            text_after = re.sub(r'<[^>]*>', '', text_after)\n         \
+          \   if text_after.strip():\n                text_parts.append(text_after.strip())\n\
+          \        \n        return ' '.join(text_parts).strip()\n    \n    # 最后的尝试：直接提取note-text中的所有文本内容\n\
+          \    note_text_pattern = r'<span class=\"note-text\"[^>]*>(.*?)</span>'\n\
+          \    note_text_match = re.search(note_text_pattern, webpage_content, re.DOTALL)\n\
+          \    if note_text_match:\n        content = note_text_match.group(1)\n \
+          \       \n        # 提取所有文本内容，包括标签和普通文本\n        all_text = []\n        \n\
+          \        # 提取所有hash-tag标签的文本\n        tag_matches = re.findall(r'<a id=\"\
+          hash-tag\"[^>]*>([^<]+)</a>', content)\n        for tag in tag_matches:\n\
+          \            all_text.append(f\"#{tag}\")\n        \n        # 提取所有span中的文本\n\
+          \        span_matches = re.findall(r'<span>([^<]*)</span>', content)\n \
+          \       for text in span_matches:\n            if text.strip():\n      \
+          \          all_text.append(text.strip())\n        \n        return ' '.join(all_text).strip()\n\
+          \    \n    return \"\"\n    \ndef main(webpage_content):\n    \"\"\"\n \
+          \   从小红书网页内容中提取标题和描述文本\n    \n    Args:\n        webpage_content (str):\
+          \ 整个网页的HTML内容\n    \n    Returns:\n        dict: 包含提取的字段的字典\n    \"\"\"\n\
+          \  \n    title = extract_title(webpage_content)\n    description = extract_description(webpage_content)\n\
+          \    \n    return {\n       \n        \"title\": title,\n        \"description\"\
+          : description\n    }"
+        code_language: python3
+        desc: ''
+        outputs:
+          description:
+            children: null
+            type: string
+          title:
+            children: null
+            type: string
+        selected: false
+        title: 提取标题、内容
+        type: code
+        variables:
+        - value_selector:
+          - '1747456153612'
+          - body
+          variable: webpage_content
+      height: 53
+      id: '1747456195415'
+      position:
+        x: 636
+        y: 262.5
+      positionAbsolute:
+        x: 636
+        y: 262.5
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 7b17da14-8f7c-4fe2-9557-e89bda79f8ef
+          role: system
+          text: "```xml\n<instruction>\n你是一个专业的小红书标题优化大师，任务是帮助用户将原有的标题改写得更吸引人、更具爆款潜力。请遵循以下步骤完成标题优化：\n\
+            \n1. 分析原标题的核心信息和情感基调，提取关键卖点或亮点。\n2. 根据小红书平台的爆款标题特征，加入以下元素（至少满足3项）：\n \
+            \  - 使用emoji符号增强视觉冲击力\n   - 加入数字或数据增加可信度\n   - 制造悬念或提出问题引发好奇心\n   - 使用感叹词或语气词增强感染力\n\
+            \   - 突出利益点或解决方案\n3. 保持标题简洁，控制在20字以内为佳，最长不超过30字。\n4. 确保标题符合小红书平台调性，避免夸张虚假宣传。\n\
+            5. 最终只输出优化后的标题，不要包含任何额外说明或XML标签。\n\n注意：改写后的标题要保留原标题的核心信息，同时显著提升吸引力。\n\
+            </instruction>\n\n<examples>\n<example>\n原标题：夏天防晒小技巧\n优化后：☀️夏日防晒必看！3个让你白到发光的冷门技巧\n\
+            </example>\n\n<example>\n原标题：办公室零食推荐\n优化后：打工人速囤！这5款低卡零食让我月瘦8斤⚡\n</example>\n\
+            \n<example>\n原标题：新手化妆教程\n优化后：震惊！化妆师绝不外传的5步伪素颜秘籍✨\n</example>\n</examples>\n\
+            \n<notes>\n1. 优先使用\U0001F525✨\U0001F4AF等高频emoji，避免生僻符号\n2. 数字最好用阿拉伯数字（如\"\
+            5\"而不是\"五\"）\n3. 可以适当使用\"！\"\"？\"等标点增强语气\n4. 爆款标题常见公式：\n   - 痛点+解决方案（熬夜脸黄？这瓶精华救我狗命）\n\
+            \   - 颠覆认知（别再用洗面奶了！）\n   - 场景化描述（约会前急救！10分钟换头术）\n</notes>\n```"
+        - id: 0fc1fe50-3ee5-43a8-a173-d796e35d43f4
+          role: user
+          text: 原来的标题是：{{#1747456195415.title#}}
+        selected: false
+        title: 标题优化LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1747456262329'
+      position:
+        x: 939
+        y: 262.5
+      positionAbsolute:
+        x: 939
+        y: 262.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 08a20ede-6a4b-4d14-8de9-452f994bc803
+          role: system
+          text: "```xml\n<instruction>\n你是一个专业的小红书内容文案优化大师，任务是帮助用户将原有的内容文案改写得更吸引人、更具爆款潜力。请按照以下步骤完成优化：\n\
+            \n1. 仔细阅读用户提供的原始文案，理解其核心内容和表达意图。\n2. 分析文案的优缺点，包括吸引力、情感共鸣、信息清晰度等方面。\n3.\
+            \ 运用以下技巧进行优化：\n   - 添加吸引眼球的标题或开头\n   - 使用emoji增加活泼感\n   - 加入具体数字或数据增强可信度\n\
+            \   - 创造悬念或提出问题引发好奇心\n   - 使用短句和段落提高可读性\n   - 加入个人体验或情感表达增强共鸣\n4. 保持文案的核心信息不变，但通过更生动的表达方式呈现。\n\
+            5. 确保优化后的文案符合小红书平台的风格特点：亲切、实用、有分享价值。\n6. 输出仅包含优化后的文案，不要包含任何解释或XML标签。\n\
+            \n请确保优化后的文案：\n- 长度适中（100-300字）\n- 包含2-5个相关emoji\n- 有明确的亮点和记忆点\n- 能引发读者互动欲望（点赞、收藏、评论）\n\
+            </instruction>\n\n<examples>\n<example>\n<原始文案>\n这款面膜很好用，补水效果不错，推荐给大家。\n\
+            <优化文案>\n\U0001F4A6急救补水神器！连用3天黑科技面膜实测｜皮肤喝饱水！\n\n姐妹们快看过来！这款面膜我真的要吹爆它✨\n\
+            上周熬夜加班皮肤干到爆皮，连续敷了3天\n现在脸蛋水嫩到能掐出水来\U0001F4A7\n核心成分是5D玻尿酸+神经酰胺\n不仅补水还能锁水，效果堪比美容院护理！\n\
+            价格还超亲民，学生党也毫无压力\n已经囤了半年的量，真心安利给所有干皮姐妹\U0001F46D\n#好物分享 #面膜推荐 #护肤干货\n</example>\n\
+            \n<example>\n<原始文案>\n周末去了新开的咖啡馆，环境很好，咖啡也不错。\n<优化文案>\n☕️挖到宝了！市中心这家小众咖啡馆美到犯规！\n\
+            \n终于打卡了这家藏在巷子里的神仙咖啡馆\n复古工业风装修随手一拍就是大片\U0001F4F8\n招牌海盐焦糖拿铁一口惊艳到跺脚！\n老板是蓝带毕业的，甜点也绝绝子\U0001F370\
+            \n周末人不多，安静得能呆一整天\n已经列入我的秘密基地清单\U0001F9FE\n求求别太火，想私藏又忍不住分享\n#高颜值咖啡馆 #周末去哪儿\
+            \ #城市探索\n</example>\n\n<example>\n<原始文案>\n健身三个月，体重减了10斤，很开心。\n<优化文案>\n\
+            \U0001F5253个月怒减10斤｜小基数减肥逆袭全记录！\n\n从XL码到S码的血泪史来啦\U0001F459\n初始体重108斤→现在98斤\n\
+            体脂率从28%降到21%！\n没有节食！纯靠饮食调整+居家运动\n分享我的5个懒人必看小技巧：\n1. 16+8轻断食yyds\n2. 每天2000ml温水\n\
+            3. 帕梅拉每周3次\n4. 戒掉奶茶改喝美式\n5. 早睡真的会瘦！\n现在穿什么都自信，姐妹们冲就对了\U0001F4AA\n#减肥逆袭\
+            \ #健身干货 #小基数减肥\n</example>\n</examples>\n\n<notes>\n1. 文案优化要保留原始信息的准确性\n\
+            2. 适当使用流行语但不要过度\n3. 重点信息可以用符号或换行突出\n4. 话题标签控制在3-5个为宜\n5. 语气要亲切自然，像朋友分享\n\
+            </notes>\n```"
+        - id: e38e7054-a7e6-4f3e-ab8b-0d51b8a12ed0
+          role: user
+          text: 用户输入的文案是：{{#1747456195415.description#}}
+        selected: false
+        title: 内容优化LLM
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 89
+      id: '1747456310230'
+      position:
+        x: 939
+        y: 391.5
+      positionAbsolute:
+        x: 939
+        y: 391.5
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - '1747456262329'
+          - text
+          variable: opt_title
+        - value_selector:
+          - '1747456310230'
+          - text
+          variable: opt_content
+        selected: false
+        title: 优化后的标题、内容
+        type: end
+      height: 115
+      id: '1747456395930'
+      position:
+        x: 1242
+        y: 262.5
+      positionAbsolute:
+        x: 1242
+        y: 262.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 243
+    - data:
+        author: M James
+        desc: ''
+        height: 296
+        selected: false
+        showAuthor: true
+        text: '{"root":{"children":[{"children":[{"detail":0,"format":0,"mode":"normal","style":"","text":"小红书链接，需登录网页版后，复制的图文可得链接。示例输入链接（session失效可能失效无法直接用例子）：https://www.xiaohongshu.com/explore/68206de7000000002001cb87?source=webshare&xhsshare=pc_web&xsec_token=ABmfpWH4HNliJAKlz-0of4_37w7rLht1YN0CpuED4E2Xg=&xsec_source=pc_share","type":"text","version":1}],"direction":"ltr","format":"","indent":0,"type":"paragraph","version":1,"textFormat":0,"textStyle":""}],"direction":"ltr","format":"","indent":0,"type":"root","version":1}}'
+        theme: blue
+        title: ''
+        type: ''
+        width: 282
+      height: 296
+      id: '1747456683065'
+      position:
+        x: 16.00589413763481
+        y: 391.5
+      positionAbsolute:
+        x: 16.00589413763481
+        y: 391.5
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom-note
+      width: 282
+    viewport:
+      x: -129.45000000000033
+      y: 59.49999999999994
+      zoom: 0.7000000000000002
